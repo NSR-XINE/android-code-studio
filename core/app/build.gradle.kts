@@ -97,7 +97,10 @@ android {
 
   buildTypes {
     debug {
-      signingConfig = signingConfigs.getByName("custom")
+      val envStorePassword = System.getenv("SIGNING_STORE_PASSWORD")
+      if (!envStorePassword.isNullOrEmpty()) {
+        signingConfig = signingConfigs.getByName("custom")
+      }
     }
 
     release {

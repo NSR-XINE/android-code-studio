@@ -25,6 +25,14 @@ java {
   targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+sourceSets {
+  main {
+    java {
+      exclude("openjdk/tools/sjavac/**")
+    }
+  }
+}
+
 dependencies {
   api(projects.buildDeps.javaCompiler)
 }
