@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- Alert Dialog with native background blur for Android 12+ -->
+  <style name="AppTheme.MaterialAlertDialog" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
+    <item name="shapeAppearanceOverlay">@style/MaterialDialog.ShapeAppearance</item>
+    <item name="android:windowEnterAnimation">@animator/dialog_in</item>
+    <item name="android:windowExitAnimation">@animator/dialog_out</item>
+    <item name="android:windowBlurBehindEnabled">true</item>
+    <item name="android:windowBlurBehindRadius">24dp</item>
+  </style>
+
+  <!-- Bottom Sheet Dialog with native background blur for Android 12+ -->
+  <style name="AppTheme.BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog">
+    <item name="android:windowBlurBehindEnabled">true</item>
+    <item name="android:windowBlurBehindRadius">24dp</item>
+  </style>
+
+</resources>

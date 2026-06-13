@@ -32,6 +32,8 @@
     <item name="shapeAppearanceLargeComponent">@style/AppTheme.ShapeOverlay.Large</item>
     <item name="textAppearanceBodySmall">@style/TextAppearance.AndroidIDE.BodySmall</item>
     <item name="colorSuccess">@color/green_500</item>
+    <item name="materialAlertDialogTheme">@style/AppTheme.MaterialAlertDialog</item>
+    <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheetDialog</item>
   </style>
 
   <style name="Theme.AndroidIDE" parent="Theme.AndroidIDE.Styled">
@@ -109,6 +111,9 @@
   <style name="MaterialDialog.ShapeAppearance" parent="">
     <item name="cornerSize">28dp</item>
   </style>
+
+  <!-- Bottom Sheet Dialog -->
+  <style name="AppTheme.BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog"/>
 
   <style name="PopupAnimation">
     <item name="android:windowEnterAnimation">@anim/popup_in</item>
