@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!-- 85% opacity light theme background -->
+    <solid android:color="#D9F6F6F6" />
+    <corners
+        android:topLeftRadius="24dp"
+        android:topRightRadius="24dp"
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp" />
+    <!-- Subtle top reflection stroke -->
+    <stroke
+        android:width="1.5dp"
+        android:color="#80FFFFFF" />
+</shape>

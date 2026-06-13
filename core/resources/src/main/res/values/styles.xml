@@ -106,6 +106,10 @@
     <item name="shapeAppearanceOverlay">@style/MaterialDialog.ShapeAppearance</item>
     <item name="android:windowEnterAnimation">@animator/dialog_in</item>
     <item name="android:windowExitAnimation">@animator/dialog_out</item>
+    <item name="android:windowBackground">@drawable/bg_glass_dialog</item>
+    <item name="android:background">@android:color/transparent</item>
+    <item name="background">@android:color/transparent</item>
+    <item name="backgroundTint">@android:color/transparent</item>
   </style>
 
   <style name="MaterialDialog.ShapeAppearance" parent="">
@@ -113,7 +117,15 @@
   </style>
 
   <!-- Bottom Sheet Dialog -->
-  <style name="AppTheme.BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog"/>
+  <style name="AppTheme.BottomSheetDialog" parent="@style/ThemeOverlay.Material3.BottomSheetDialog">
+    <item name="bottomSheetStyle">@style/AppTheme.BottomSheet</item>
+  </style>
+
+  <!-- Bottom Sheet Style -->
+  <style name="AppTheme.BottomSheet" parent="Widget.Material3.BottomSheet">
+    <item name="android:background">@drawable/bg_glass_bottom_sheet</item>
+    <item name="backgroundTint">@null</item>
+  </style>
 
   <style name="PopupAnimation">
     <item name="android:windowEnterAnimation">@anim/popup_in</item>
