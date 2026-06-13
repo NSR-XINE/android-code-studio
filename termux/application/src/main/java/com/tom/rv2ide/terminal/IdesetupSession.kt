@@ -83,9 +83,68 @@ private constructor(
               com.tom.rv2ide.app.configuration.CpuArch.X86_64 -> "x86_64"
               com.tom.rv2ide.app.configuration.CpuArch.X86 -> "x86"
             }
-        context.assets.open(ToolsManager.getCommonAsset("${folderName}/idesetup")).use { inputStream
-          ->
-          FileOutputStream(script).use { outputStream -> inputStream.copyTo(outputStream) }
+        
+        // Write the original binary to script_real
+        val scriptReal = File(script.absolutePath + "_real")
+        context.assets.open(ToolsManager.getCommonAsset("${folderName}/idesetup")).use { inputStream ->
+          FileOutputStream(scriptReal).use { outputStream -> inputStream.copyTo(outputStream) }
+        }
+        FileUtils.setFilePermissions("idesetupRealScript", scriptReal.absolutePath, "rwx")
+
+        // Write the wrapper script to script
+        val wrapperScriptContent = """
+            #!/usr/bin/env bash
+            # Run the real idesetup first
+            "${script.absolutePath}_real" "${'$'}@"
+            RET=${'$'}?
+
+            # If real idesetup failed, we must fail
+            if [ ${'$'}RET -ne 0 ]; then
+              exit ${'$'}RET
+            fi
+
+            # Try installing Antigravity CLI
+            (
+              ARCH=${'$'}(uname -m)
+              if [ "${'$'}ARCH" = "aarch64" ]; then
+                echo "[..] Auto-installing Antigravity CLI..."
+                export PATH="${'$'}{PREFIX}/bin:/system/bin:${'$'}PATH"
+                export LD_LIBRARY_PATH="${'$'}{PREFIX}/lib"
+                export DEBIAN_FRONTEND=noninteractive
+                
+                echo "[..] Updating packages and installing glibc & ca-certificates..."
+                apt-get update -qy && \
+                apt-get install -yqy glibc-repo && \
+                apt-get update -qy && \
+                apt-get install -yqy glibc ca-certificates curl tar || {
+                  echo "[WRN] Failed to install dependencies (glibc, ca-certificates, curl, tar)"
+                  exit 0
+                }
+                
+                echo "[..] Fetching Antigravity CLI installer..."
+                curl -fsSL https://raw.githubusercontent.com/wallentx/antigravity-cli-termux/dev/install.sh -o "${'$'}{PREFIX}/tmp/agy_install.sh" || {
+                  echo "[WRN] Failed to download Antigravity CLI installer"
+                  exit 0
+                }
+                
+                # Strip the exec auto-launch from the installer
+                sed -i 's|exec "${'$'}INSTALL_BIN_DIR/agy"|# exec "${'$'}INSTALL_BIN_DIR/agy"|g' "${'$'}{PREFIX}/tmp/agy_install.sh"
+                
+                echo "[..] Running Antigravity CLI installer..."
+                bash "${'$'}{PREFIX}/tmp/agy_install.sh" || {
+                  echo "[WRN] Antigravity CLI installer failed"
+                  exit 0
+                }
+                
+                echo "[OK] Antigravity CLI installed successfully!"
+              fi
+            ) || echo "[WRN] Antigravity CLI installation failed but continuing setup..."
+
+            exit 0
+        """.trimIndent()
+
+        FileOutputStream(script).use { outputStream ->
+          outputStream.write(wrapperScriptContent.toByteArray())
         }
         true
       } catch (e: Exception) {
@@ -109,9 +168,16 @@ private constructor(
   override fun finish() {
     super.finish()
     // Delete the temporary script file once the session is finished
-    val error = FileUtils.deleteFile("idesetupScript", script.absolutePath, true)
+    var error = FileUtils.deleteFile("idesetupScript", script.absolutePath, true)
     if (error != null) {
       log.error(error.errorLogString)
+    }
+    val scriptReal = File(script.absolutePath + "_real")
+    if (scriptReal.exists()) {
+      error = FileUtils.deleteFile("idesetupRealScript", scriptReal.absolutePath, true)
+      if (error != null) {
+        log.error(error.errorLogString)
+      }
     }
   }
 }
