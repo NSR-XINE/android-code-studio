@@ -93,7 +93,7 @@ private constructor(
 
         // Write the wrapper script to script
         val wrapperScriptContent = """
-            #!/usr/bin/env bash
+            #!/system/bin/sh
             # Run the real idesetup first
             "${script.absolutePath}_real" "${'$'}@"
             RET=${'$'}?
